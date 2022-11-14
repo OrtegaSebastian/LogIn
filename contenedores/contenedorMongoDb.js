@@ -13,7 +13,7 @@ export const removeField = (record, field) => {
   return value;
 };
 
-await mongoose.connect("mongodb://127.0.0.1/users", {
+await mongoose.connect("mongodb+srv://sebasindahouse:Mosi0310@cluster0.epscnqt.mongodb.net/sesiones", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });

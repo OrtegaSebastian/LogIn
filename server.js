@@ -3,6 +3,8 @@ import session from "express-session";
 import bodyParser from "body-parser";
 import MongoStore from "connect-mongo";
 import DAOUsuarios from "./daos/UsuariosDAO.js";
+import url from 'url'
+import { join } from "path";
 const MongoUsers = new DAOUsuarios();
 
 const app = express();
@@ -13,7 +15,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static('public'))
-const { pathname: root } = new URL(".", import.meta.url);
+const __dirname = url.fileURLToPath(new URL(".", import.meta.url))
+const rutaLogin = join(__dirname,"public/login.html")
 
 
 app.use(session({
@@ -36,7 +39,7 @@ const auth= (req,res,next)=>{
 
 app.get('/',(req,res)=>{
 
-res.sendFile( root + "public/login.html")
+res.sendFile( rutaLogin)
 })
 
 app.post('/',async(req,res)=>{

@@ -17,6 +17,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static('public'))
 const __dirname = url.fileURLToPath(new URL(".", import.meta.url))
 const rutaLogin = join(__dirname,"public/login.html")
+const rutaBienvenido = join(__dirname,"public/bienvenido.html")
+
 
 
 app.use(session({
@@ -38,9 +40,17 @@ const auth= (req,res,next)=>{
 }
 
 app.get('/',(req,res)=>{
-
-res.sendFile( rutaLogin)
-})
+    if (req.query.user) req.session.usuario = req.query.user;
+    if (req.session.usuario) {
+    res.sendFile(rutaBienvenido)
+    res.send(
+        `Hola ${req.session.usuario} `
+    );
+    }else {
+        res.sendFile(rutaLogin);
+    }
+    }
+)
 
 app.post('/',async(req,res)=>{
     try {
@@ -58,7 +68,6 @@ app.post('/registro', async(req,res)=>{
     const { username, password } = req.body;
     await MongoUsers.guardar({ username, password });
     req.session.usuario = username;
-    req.session.rank = 0;
     res.redirect("/");
 })
 

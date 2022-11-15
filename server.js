@@ -18,6 +18,7 @@ app.use(express.static('public'))
 const __dirname = url.fileURLToPath(new URL(".", import.meta.url))
 const rutaLogin = join(__dirname,"public/login.html")
 const rutaBienvenido = join(__dirname,"public/bienvenido.html")
+const rutaRegistro= join(__dirname,"public/registro.html")
 
 
 
@@ -64,7 +65,12 @@ app.post('/',async(req,res)=>{
     }
 })
 
+app.get('/registro',(req,res)=>{
+    res.sendFile(rutaRegistro)
+})
+
 app.post('/registro', async(req,res)=>{
+    res.sendFile(rutaRegistro)
     const { username, password } = req.body;
     await MongoUsers.guardar({ username, password });
     req.session.usuario = username;

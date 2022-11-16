@@ -18,8 +18,6 @@ app.use(express.static('public'))
 const __dirname = url.fileURLToPath(new URL(".", import.meta.url))
 const rutaLogin = join(__dirname,"public/login.html")
 const rutaBienvenido = join(__dirname,"public/bienvenido.html")
-const rutaRegistro= join(__dirname,"public/registro.html")
-
 
 
 app.use(session({
@@ -40,8 +38,8 @@ const auth= (req,res,next)=>{
     req.session.isAdmin == true?next():res.status(401).send('sin permisos')
 }
 
-app.get('/',(req,res)=>{
-    if (req.query.user) req.session.usuario = req.query.user;
+app.get('/',(req,res)=>{   
+    if (req.query.username) req.session.usuario = req.query.username;
     if (req.session.usuario) {
     res.sendFile(rutaBienvenido)
     res.send(
@@ -65,16 +63,14 @@ app.post('/',async(req,res)=>{
     }
 })
 
-app.get('/registro',(req,res)=>{
-    res.sendFile(rutaRegistro)
-})
-
 app.post('/registro', async(req,res)=>{
-    res.sendFile(rutaRegistro)
+    console.log(req.body)
     const { username, password } = req.body;
-    await MongoUsers.guardar({ username, password });
+    const result = await MongoUsers.guardar({ username, password });
     req.session.usuario = username;
+    console.log(result);
     res.redirect("/");
+    res.send(`'usuario registrado' ${result}`)
 })
 
 app.get('/logout',(req,res)=>{
@@ -84,7 +80,8 @@ app.get('/logout',(req,res)=>{
 })
 
 
-app.listen(8081, () => console.log("conectados"));
+
+app.listen(8082, () => console.log("conectados"));
 
 
 

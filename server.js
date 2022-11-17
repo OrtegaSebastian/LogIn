@@ -18,6 +18,8 @@ app.use(express.static('public'))
 const __dirname = url.fileURLToPath(new URL(".", import.meta.url))
 const rutaLogin = join(__dirname,"public/login.html")
 const rutaBienvenido = join(__dirname,"public/bienvenido.html")
+const rutaRegistro = join(__dirname,"public/registro.html")
+const rutaError = join(__dirname,"public/error.html")
 
 
 app.use(session({
@@ -50,6 +52,17 @@ app.get('/',(req,res)=>{
     }
     }
 )
+app.get('/registro',(req,res)=>{      
+if (req.session.usuario) {
+res.sendFile(rutaBienvenido);
+} else {
+if (req.query.error) {
+    res.sendFile(rutaError);
+} else {
+    res.sendFile(rutaLogin);
+}
+}}
+)
 
 app.post('/',async(req,res)=>{
     try {
@@ -63,12 +76,10 @@ app.post('/',async(req,res)=>{
     }
 })
 
-app.post('/registro', async(req,res)=>{
-    console.log(req.body)
+app.post('/registro', async(req,res)=>{    
     const { username, password } = req.body;
     const result = await MongoUsers.guardar({ username, password });
     req.session.usuario = username;
-    console.log(result);
     res.redirect("/");
     res.send(`'usuario registrado' ${result}`)
 })
